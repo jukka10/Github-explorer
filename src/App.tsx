@@ -1,11 +1,7 @@
 import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <h1>Hellow word</h1>
-    </div>
-  );
-}
+import Routes from "./routes/index";
+
+const App: React.FC = () => <Routes />;
 
 export default App;
