@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
@@ -32,17 +32,17 @@ const Details: React.FC = () => {
 
   const [issues, setIssues] = useState<Issue[]>([]);
 
-  async function loadIssues() {
+  const loadIssues = useCallback(async () => {
     const { data } = await api.get<Issue[]>(
       `repos/${repository.full_name}/issues`
     );
 
     setIssues(data);
-  }
+  }, [repository.full_name]);
 
   useEffect(() => {
     loadIssues();
-  }, [loadIssues, repository.full_name]);
+  }, [loadIssues]);
 
   return (
     <>
