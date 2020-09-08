@@ -1,4 +1,5 @@
-import React, { useState, FormEvent } from "react";
+import React, { useState, useEffect, FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { FiChevronRight } from "react-icons/fi";
 
 import { Title, Form, Repositories, Error } from "./styled";
@@ -16,7 +17,20 @@ interface Repository {
 const Dashboard: React.FC = () => {
   const [newRepo, setNewRepo] = useState("");
   const [error, setError] = useState("");
-  const [repos, setRepos] = useState<Repository[]>([]);
+  const [repos, setRepos] = useState<Repository[]>(() => {
+    const storagedRepositories = localStorage.getItem(
+      "@GithubExplorer:repositories"
+    );
+
+    if (storagedRepositories) {
+      return JSON.parse(storagedRepositories);
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("@GithubExplorer:repositories", JSON.stringify(repos));
+  }, [repos]);
 
   async function loadRepositories(e: FormEvent) {
     e.preventDefault();
@@ -54,14 +68,14 @@ const Dashboard: React.FC = () => {
       {error && <Error>{error}</Error>}
       <Repositories>
         {repos.map((repository, index) => (
-          <a href="ffdb" key={index}>
+          <Link to={{ pathname: "/details", state: repository }} key={index}>
             <img src={repository.owner.avatar_url} alt="jukka10" />
             <div>
               <strong>{repository.full_name}</strong>
               <p>{repository.description}</p>
             </div>
             <FiChevronRight size={20} />
-          </a>
+          </Link>
         ))}
       </Repositories>
     </div>
